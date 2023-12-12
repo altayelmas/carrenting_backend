@@ -3,6 +3,7 @@ package com.se.carrenting_backend.controller;
 import com.se.carrenting_backend.model.dto.VehicleCreateRequest;
 import com.se.carrenting_backend.model.dto.VehicleDto;
 import com.se.carrenting_backend.service.VehicleService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/vehicle")
+@CrossOrigin("http://localhost:3000")
 public class VehicleController {
     private final VehicleService vehicleService;
 
@@ -19,12 +21,12 @@ public class VehicleController {
 
     @PostMapping("/create")
     public ResponseEntity<VehicleDto> createVehicle(@RequestBody VehicleCreateRequest request) {
-        return ResponseEntity.ok(vehicleService.createVehicle(new VehicleCreateRequest()));
+        return ResponseEntity.ok(vehicleService.createVehicle(request));
     }
 
     @GetMapping("/getAll")
-    public List<ResponseEntity<VehicleDto>> getAllVehicles() {
-        return null;
+    public ResponseEntity<List<VehicleDto>> getAllVehicles() {
+        return new ResponseEntity<>(vehicleService.getAll(), HttpStatus.OK);
     }
 
     @GetMapping("/get/{licencePlate}")

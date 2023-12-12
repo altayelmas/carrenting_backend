@@ -1,11 +1,19 @@
 package com.se.carrenting_backend.model.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import com.se.carrenting_backend.model.enums.CarBrand;
+import com.se.carrenting_backend.model.enums.CarType;
+import com.se.carrenting_backend.model.enums.GearType;
+import lombok.*;
 
 @Getter
 @Setter
 @Builder
 public class VehicleDto {
+    private String licencePlate;
+    private CarType carType;
+    private CarBrand carBrand;
+    private GearType gearType;
+    private Integer seats;
+    private boolean isAvailable;
+    private String img;
 }
