@@ -19,5 +19,5 @@ public class GuestReservationDto {
     private String street;
     private String postCode;
     private String phoneNumber;
-    private Car car;
+    private String licencePlate;
 }

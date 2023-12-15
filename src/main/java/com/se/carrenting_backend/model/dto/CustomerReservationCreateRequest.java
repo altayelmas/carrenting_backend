@@ -14,7 +14,6 @@ public class CustomerReservationCreateRequest {
     private Integer reservationId;
     private Date beginDate;
     private Date endDate;
-    private boolean isValid;
-    private Customer customer;
-    private Car car;
+    private String idNumber;
+    private String licencePlate;
 }
