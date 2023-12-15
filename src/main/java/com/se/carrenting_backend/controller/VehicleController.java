@@ -33,4 +33,9 @@ public class VehicleController {
     public ResponseEntity<VehicleDto> getVehicle(@PathVariable("licencePlate") String licencePlate) {
         return null;
     }
+
+    @GetMapping("/getByAmount/{amount}")
+    public ResponseEntity<List<VehicleDto>> getVehiclesByAmount(@PathVariable("amount") Integer amount) {
+        return new ResponseEntity<>(vehicleService.getVehiclesByAmount(amount), HttpStatus.OK);
+    }
 }
