@@ -13,7 +13,6 @@ public class GuestReservationCreateRequest {
     private Integer reservationId;
     private Date beginDate;
     private Date endDate;
-    private boolean isValid;
     private String email;
     private String idNumber;
     private String country;
@@ -21,5 +20,5 @@ public class GuestReservationCreateRequest {
     private String street;
     private String postCode;
     private String phoneNumber;
-    private Car car;
+    private String licencePlate;
 }

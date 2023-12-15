@@ -19,6 +19,7 @@ public class GuestReservationMapper {
                 .street(guestReservation.getStreet())
                 .postCode(guestReservation.getPostCode())
                 .phoneNumber(guestReservation.getPhoneNumber())
+                .licencePlate(guestReservation.getCar().getLicencePlate())
                 .build();
     }
 }
