@@ -1,6 +1,7 @@
 package com.se.carrenting_backend.model;
 
 import com.se.carrenting_backend.model.enums.*;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
@@ -23,6 +24,7 @@ public class Car {
     private Engine engine;
     private Integer seats;
     private boolean isAvailable;
+    @Column(length = 100000)
     private String img;
     @OneToMany
     private List<CustomerReservation> customerReservationList;

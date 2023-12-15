@@ -59,4 +59,11 @@ public class VehicleService {
         }
         return vehicleDtoList;
     }
+
+    public List<VehicleDto> getAllAvailableCars() {
+        List<Car> carList = vehicleRepository.findAllByIsAvailable(true);
+        List<VehicleDto> vehicleDtoList = vehicleMapper.carListToDtoList(carList);
+
+        return vehicleDtoList;
+    }
 }
