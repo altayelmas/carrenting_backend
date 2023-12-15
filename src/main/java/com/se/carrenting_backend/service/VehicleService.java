@@ -43,4 +43,20 @@ public class VehicleService {
                     .build();
             return vehicleMapper.convertToDto(vehicleRepository.save(car));
     }
+
+    public List<VehicleDto> getVehiclesByAmount(Integer amount) {
+        List<Car> carList = vehicleRepository.findAll();
+        List<VehicleDto> vehicleDtoList = new ArrayList<>();
+
+        if (amount <= carList.size()) {
+            for (int i = 0; i < amount; i++) {
+                vehicleDtoList.add(vehicleMapper.convertToDto(carList.get(i)));
+            }
+        } else {
+            for (int i = 0; i < carList.size(); i++) {
+                vehicleDtoList.add(vehicleMapper.convertToDto(carList.get(i)));
+            }
+        }
+        return vehicleDtoList;
+    }
 }
