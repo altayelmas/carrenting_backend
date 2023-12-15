@@ -38,4 +38,9 @@ public class VehicleController {
     public ResponseEntity<List<VehicleDto>> getVehiclesByAmount(@PathVariable("amount") Integer amount) {
         return new ResponseEntity<>(vehicleService.getVehiclesByAmount(amount), HttpStatus.OK);
     }
+
+    @GetMapping("/getAllAvailableCars")
+    public ResponseEntity<List<VehicleDto>> getAllAvailableCars() {
+        return new ResponseEntity<>(vehicleService.getAllAvailableCars(), HttpStatus.OK);
+    }
 }
