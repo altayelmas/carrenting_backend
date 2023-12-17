@@ -14,4 +14,6 @@ public interface VehicleRepository extends PagingAndSortingRepository<Car, Strin
     Page<Car> findAll(Pageable pageable);
     List<Car> findAllByIsAvailable(boolean isAvailable, Pageable pageable);
     List<Car> findAllByIsAvailable(boolean isAvailable);
+    Page<Car> findAllByCarModelContainingAndIsAvailable(String carModel, boolean isAvailable, Pageable pageable);
+    List<Car> findAllByCarModelContainingAndIsAvailable(String carModel, boolean isAvailable);
 }

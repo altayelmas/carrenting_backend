@@ -39,6 +39,7 @@ public class VehicleService {
                     .carType(request.getCarType())
                     .gearType(request.getGearType())
                     .carBrand(request.getCarBrand())
+                    .carModel(request.getCarModel())
                     .engine(request.getEngine())
                     .seats(request.getSeats())
                     .isAvailable(true)
@@ -75,5 +76,18 @@ public class VehicleService {
         List<VehicleDto> vehicleDtoList = vehicleMapper.carListToDtoList(carList);
 
         return vehicleDtoList;
+    }
+
+    public List<VehicleDto> getAllAvailableCarsWithModel(Integer page, Integer size, String model) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Car> carList = vehicleRepository.findAllByCarModelContainingAndIsAvailable(model, true, pageable);
+        List<VehicleDto> vehicleDtoList = vehicleMapper.carListToDtoList(carList.getContent());
+
+        return vehicleDtoList;
+    }
+
+    public Integer getAmountOfAvailableCarsWithModel(String model) {
+        List<Car> carList = vehicleRepository.findAllByCarModelContainingAndIsAvailable(model, true);
+        return carList.size();
     }
 }

@@ -51,4 +51,20 @@ public class VehicleController {
                 .build();
         return new ResponseEntity<>(vehicleResponse, HttpStatus.OK);
     }
+
+    @GetMapping("/getAllAvailableCars/{page}/{size}/{model}")
+    public ResponseEntity<VehicleResponse> getAllAvailableCarsWithModel(@PathVariable("page") Integer page, @PathVariable("size") Integer size,
+                                                                        @PathVariable("model") String model) {
+
+        List<VehicleDto> vehicleDtoList = vehicleService.getAllAvailableCarsWithModel(page, size, model);
+        VehicleResponse vehicleResponse = VehicleResponse.builder()
+                .vehicleDtoList(vehicleDtoList)
+                .vehicleAmount(vehicleService.getAmountOfAvailableCarsWithModel(model))
+                .isSuccess(true)
+                .message(HttpStatus.OK.toString())
+                .build();
+        return new ResponseEntity<>(vehicleResponse, HttpStatus.OK);
+    }
+
+
 }
