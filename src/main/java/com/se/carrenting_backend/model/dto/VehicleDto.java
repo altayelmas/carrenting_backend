@@ -12,6 +12,7 @@ public class VehicleDto {
     private String licencePlate;
     private CarType carType;
     private CarBrand carBrand;
+    private String carModel;
     private GearType gearType;
     private Integer seats;
     private boolean isAvailable;

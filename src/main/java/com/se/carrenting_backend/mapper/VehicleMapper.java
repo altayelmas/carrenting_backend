@@ -15,6 +15,7 @@ public class VehicleMapper {
                 .licencePlate(car.getLicencePlate())
                 .carType(car.getCarType())
                 .carBrand(car.getCarBrand())
+                .carModel(car.getCarModel())
                 .gearType(car.getGearType())
                 .seats(car.getSeats())
                 .img(car.getImg())
