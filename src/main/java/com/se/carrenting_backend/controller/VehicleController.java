@@ -2,6 +2,7 @@ package com.se.carrenting_backend.controller;
 
 import com.se.carrenting_backend.model.dto.VehicleCreateRequest;
 import com.se.carrenting_backend.model.dto.VehicleDto;
+import com.se.carrenting_backend.model.dto.VehicleResponse;
 import com.se.carrenting_backend.service.VehicleService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +25,9 @@ public class VehicleController {
         return ResponseEntity.ok(vehicleService.createVehicle(request));
     }
 
-    @GetMapping("/getAll")
-    public ResponseEntity<List<VehicleDto>> getAllVehicles() {
-        return new ResponseEntity<>(vehicleService.getAll(), HttpStatus.OK);
+    @GetMapping("/getAll/{page}/{size}")
+    public ResponseEntity<List<VehicleDto>> getAllVehicles(@PathVariable("page") Integer page, @PathVariable("size") Integer size) {
+        return new ResponseEntity<>(vehicleService.getAll(page, size), HttpStatus.OK);
     }
 
     @GetMapping("/get/{licencePlate}")
@@ -34,13 +35,20 @@ public class VehicleController {
         return null;
     }
 
-    @GetMapping("/getByAmount/{amount}")
+    /*@GetMapping("/getByAmount/{amount}")
     public ResponseEntity<List<VehicleDto>> getVehiclesByAmount(@PathVariable("amount") Integer amount) {
         return new ResponseEntity<>(vehicleService.getVehiclesByAmount(amount), HttpStatus.OK);
     }
-
-    @GetMapping("/getAllAvailableCars")
-    public ResponseEntity<List<VehicleDto>> getAllAvailableCars() {
-        return new ResponseEntity<>(vehicleService.getAllAvailableCars(), HttpStatus.OK);
+*/
+    @GetMapping("/getAllAvailableCars/{page}/{size}")
+    public ResponseEntity<VehicleResponse> getAllAvailableCars(@PathVariable("page") Integer page, @PathVariable("size") Integer size) {
+        List<VehicleDto> vehicleDtoList = vehicleService.getAllAvailableCarsWithPage(page, size);
+        VehicleResponse vehicleResponse = VehicleResponse.builder()
+                .vehicleDtoList(vehicleDtoList)
+                .vehicleAmount(vehicleService.getAvailableVehicleAmount())
+                .isSuccess(true)
+                .message(HttpStatus.OK.toString())
+                .build();
+        return new ResponseEntity<>(vehicleResponse, HttpStatus.OK);
     }
 }

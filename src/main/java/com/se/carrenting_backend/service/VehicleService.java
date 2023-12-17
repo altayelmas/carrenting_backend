@@ -5,6 +5,9 @@ import com.se.carrenting_backend.model.Car;
 import com.se.carrenting_backend.model.dto.VehicleCreateRequest;
 import com.se.carrenting_backend.model.dto.VehicleDto;
 import com.se.carrenting_backend.repository.VehicleRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,8 +24,10 @@ public class VehicleService {
         this.vehicleMapper = vehicleMapper;
     }
 
-    public List<VehicleDto> getAll() {
-        List<Car> carList = vehicleRepository.findAll();
+    public List<VehicleDto> getAll(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Car> pageContent = vehicleRepository.findAll(pageable);
+        List<Car> carList = pageContent.getContent();
         List<VehicleDto> vehicleDtoList = vehicleMapper.carListToDtoList(carList);
 
         return vehicleDtoList;
@@ -44,7 +49,7 @@ public class VehicleService {
             return vehicleMapper.convertToDto(vehicleRepository.save(car));
     }
 
-    public List<VehicleDto> getVehiclesByAmount(Integer amount) {
+    /*public List<VehicleDto> getVehiclesByAmount(Integer amount) {
         List<Car> carList = vehicleRepository.findAll();
         List<VehicleDto> vehicleDtoList = new ArrayList<>();
 
@@ -58,10 +63,15 @@ public class VehicleService {
             }
         }
         return vehicleDtoList;
-    }
+    }*/
 
-    public List<VehicleDto> getAllAvailableCars() {
+    public Integer getAvailableVehicleAmount() {
         List<Car> carList = vehicleRepository.findAllByIsAvailable(true);
+        return carList.size();
+    }
+    public List<VehicleDto> getAllAvailableCarsWithPage(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
+        List<Car> carList = vehicleRepository.findAllByIsAvailable(true, pageable);
         List<VehicleDto> vehicleDtoList = vehicleMapper.carListToDtoList(carList);
 
         return vehicleDtoList;
