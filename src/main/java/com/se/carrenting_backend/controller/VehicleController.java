@@ -66,5 +66,33 @@ public class VehicleController {
         return new ResponseEntity<>(vehicleResponse, HttpStatus.OK);
     }
 
+    @GetMapping("/getAllCarsWithBrand/{page}/{size}/{brand}")
+    public ResponseEntity<VehicleResponse> getAllAvailableCarsWithBrand (@PathVariable("page") Integer page, @PathVariable("size") Integer size,
+                                                                         @PathVariable("brand") String brand) {
+        List<VehicleDto> vehicleDtoList = vehicleService.getAllAvailableCarsWithBrand(page, size, brand);
+        VehicleResponse vehicleResponse = VehicleResponse.builder()
+                .vehicleDtoList(vehicleDtoList)
+                .vehicleAmount(vehicleService.getAmountOfAvailableCarsWithBrand(brand))
+                .isSuccess(true)
+                .message(HttpStatus.OK.toString())
+                .build();
+        return new ResponseEntity<>(vehicleResponse, HttpStatus.OK);
+    }
+
+    @GetMapping("/getAllAvailableCars/{page}/{size}/{model}/{brand}")
+    public ResponseEntity<VehicleResponse> getAllAvailableCarsWithModelAndBrand(@PathVariable("page") Integer page, @PathVariable("size") Integer size,
+                                                                        @PathVariable("model") String model, @PathVariable("brand") String brand) {
+
+        List<VehicleDto> vehicleDtoList = vehicleService.getAllAvailableCarsWithModelAndBrand(page, size, model, brand);
+        VehicleResponse vehicleResponse = VehicleResponse.builder()
+                .vehicleDtoList(vehicleDtoList)
+                .vehicleAmount(vehicleService.getAmountOfAvailableCarsWithModelAndBrand(model, brand))
+                .isSuccess(true)
+                .message(HttpStatus.OK.toString())
+                .build();
+        return new ResponseEntity<>(vehicleResponse, HttpStatus.OK);
+    }
+
+
 
 }

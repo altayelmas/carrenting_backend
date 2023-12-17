@@ -4,6 +4,7 @@ import com.se.carrenting_backend.mapper.VehicleMapper;
 import com.se.carrenting_backend.model.Car;
 import com.se.carrenting_backend.model.dto.VehicleCreateRequest;
 import com.se.carrenting_backend.model.dto.VehicleDto;
+import com.se.carrenting_backend.model.enums.CarBrand;
 import com.se.carrenting_backend.repository.VehicleRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -50,22 +51,6 @@ public class VehicleService {
             return vehicleMapper.convertToDto(vehicleRepository.save(car));
     }
 
-    /*public List<VehicleDto> getVehiclesByAmount(Integer amount) {
-        List<Car> carList = vehicleRepository.findAll();
-        List<VehicleDto> vehicleDtoList = new ArrayList<>();
-
-        if (amount <= carList.size()) {
-            for (int i = 0; i < amount; i++) {
-                vehicleDtoList.add(vehicleMapper.convertToDto(carList.get(i)));
-            }
-        } else {
-            for (int i = 0; i < carList.size(); i++) {
-                vehicleDtoList.add(vehicleMapper.convertToDto(carList.get(i)));
-            }
-        }
-        return vehicleDtoList;
-    }*/
-
     public Integer getAvailableVehicleAmount() {
         List<Car> carList = vehicleRepository.findAllByIsAvailable(true);
         return carList.size();
@@ -88,6 +73,36 @@ public class VehicleService {
 
     public Integer getAmountOfAvailableCarsWithModel(String model) {
         List<Car> carList = vehicleRepository.findAllByCarModelContainingAndIsAvailable(model, true);
+        return carList.size();
+    }
+
+    public List<VehicleDto> getAllAvailableCarsWithBrand(Integer page, Integer size, String brand) {
+        Pageable pageable = PageRequest.of(page, size);
+        CarBrand carBrand = CarBrand.valueOf(brand);
+        Page<Car> carList = vehicleRepository.findAllByCarBrandAndIsAvailable(carBrand, true, pageable);
+        List<VehicleDto> vehicleDtoList = vehicleMapper.carListToDtoList(carList.getContent());
+
+        return vehicleDtoList;
+    }
+
+    public Integer getAmountOfAvailableCarsWithBrand(String brand) {
+        CarBrand carBrand = CarBrand.valueOf(brand);
+        List<Car> carList = vehicleRepository.findAllByCarBrandAndIsAvailable(carBrand,true);
+        return carList.size();
+    }
+
+    public List<VehicleDto> getAllAvailableCarsWithModelAndBrand(Integer page, Integer size, String model, String brand) {
+        Pageable pageable = PageRequest.of(page, size);
+        CarBrand carBrand = CarBrand.valueOf(brand);
+        Page<Car> carList = vehicleRepository.findAllByCarModelContainingAndIsAvailableAndCarBrand(model, true, carBrand, pageable);
+        List<VehicleDto> vehicleDtoList = vehicleMapper.carListToDtoList(carList.getContent());
+
+        return vehicleDtoList;
+    }
+
+    public Integer getAmountOfAvailableCarsWithModelAndBrand(String model, String brand) {
+        CarBrand carBrand = CarBrand.valueOf(brand);
+        List<Car> carList = vehicleRepository.findAllByCarModelContainingAndIsAvailableAndCarBrand(model, true, carBrand);
         return carList.size();
     }
 }
