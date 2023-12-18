@@ -35,64 +35,15 @@ public class VehicleController {
         return null;
     }
 
-    /*@GetMapping("/getByAmount/{amount}")
-    public ResponseEntity<List<VehicleDto>> getVehiclesByAmount(@PathVariable("amount") Integer amount) {
-        return new ResponseEntity<>(vehicleService.getVehiclesByAmount(amount), HttpStatus.OK);
-    }
-*/
-    @GetMapping("/getAllAvailableCars/{page}/{size}")
-    public ResponseEntity<VehicleResponse> getAllAvailableCars(@PathVariable("page") Integer page, @PathVariable("size") Integer size) {
-        List<VehicleDto> vehicleDtoList = vehicleService.getAllAvailableCarsWithPage(page, size);
-        VehicleResponse vehicleResponse = VehicleResponse.builder()
-                .vehicleDtoList(vehicleDtoList)
-                .vehicleAmount(vehicleService.getAvailableVehicleAmount())
-                .isSuccess(true)
-                .message(HttpStatus.OK.toString())
-                .build();
+    @GetMapping("/getAllAvailableCars")
+    public ResponseEntity<VehicleResponse> getAllAvailableCars(@RequestParam Integer page,
+                                                 @RequestParam Integer size,
+                                                 @RequestParam String carBrand,
+                                                 @RequestParam String carModel) {
+
+        VehicleResponse vehicleResponse = vehicleService.getAllAvailableCars(page, size, carModel, carBrand);
         return new ResponseEntity<>(vehicleResponse, HttpStatus.OK);
     }
-
-    @GetMapping("/getAllAvailableCars/{page}/{size}/{model}")
-    public ResponseEntity<VehicleResponse> getAllAvailableCarsWithModel(@PathVariable("page") Integer page, @PathVariable("size") Integer size,
-                                                                        @PathVariable("model") String model) {
-
-        List<VehicleDto> vehicleDtoList = vehicleService.getAllAvailableCarsWithModel(page, size, model);
-        VehicleResponse vehicleResponse = VehicleResponse.builder()
-                .vehicleDtoList(vehicleDtoList)
-                .vehicleAmount(vehicleService.getAmountOfAvailableCarsWithModel(model))
-                .isSuccess(true)
-                .message(HttpStatus.OK.toString())
-                .build();
-        return new ResponseEntity<>(vehicleResponse, HttpStatus.OK);
-    }
-
-    @GetMapping("/getAllCarsWithBrand/{page}/{size}/{brand}")
-    public ResponseEntity<VehicleResponse> getAllAvailableCarsWithBrand (@PathVariable("page") Integer page, @PathVariable("size") Integer size,
-                                                                         @PathVariable("brand") String brand) {
-        List<VehicleDto> vehicleDtoList = vehicleService.getAllAvailableCarsWithBrand(page, size, brand);
-        VehicleResponse vehicleResponse = VehicleResponse.builder()
-                .vehicleDtoList(vehicleDtoList)
-                .vehicleAmount(vehicleService.getAmountOfAvailableCarsWithBrand(brand))
-                .isSuccess(true)
-                .message(HttpStatus.OK.toString())
-                .build();
-        return new ResponseEntity<>(vehicleResponse, HttpStatus.OK);
-    }
-
-    @GetMapping("/getAllAvailableCars/{page}/{size}/{model}/{brand}")
-    public ResponseEntity<VehicleResponse> getAllAvailableCarsWithModelAndBrand(@PathVariable("page") Integer page, @PathVariable("size") Integer size,
-                                                                        @PathVariable("model") String model, @PathVariable("brand") String brand) {
-
-        List<VehicleDto> vehicleDtoList = vehicleService.getAllAvailableCarsWithModelAndBrand(page, size, model, brand);
-        VehicleResponse vehicleResponse = VehicleResponse.builder()
-                .vehicleDtoList(vehicleDtoList)
-                .vehicleAmount(vehicleService.getAmountOfAvailableCarsWithModelAndBrand(model, brand))
-                .isSuccess(true)
-                .message(HttpStatus.OK.toString())
-                .build();
-        return new ResponseEntity<>(vehicleResponse, HttpStatus.OK);
-    }
-
 
 
 }

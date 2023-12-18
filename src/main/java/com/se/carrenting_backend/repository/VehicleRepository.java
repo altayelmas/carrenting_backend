@@ -4,6 +4,7 @@ import com.se.carrenting_backend.model.enums.CarBrand;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.se.carrenting_backend.model.Car;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.domain.Page;
@@ -17,8 +18,6 @@ public interface VehicleRepository extends JpaRepository<Car, String> {
     List<Car> findAllByIsAvailable(boolean isAvailable);
     Page<Car> findAllByCarModelContainingAndIsAvailable(String carModel, boolean isAvailable, Pageable pageable);
     List<Car> findAllByCarModelContainingAndIsAvailable(String carModel, boolean isAvailable);
-    Page<Car> findAllByCarBrandAndIsAvailable(CarBrand carBrand, boolean isAvailable, Pageable pageable);
-    List<Car> findAllByCarBrandAndIsAvailable(CarBrand carBrand, boolean isAvailable);
     Page<Car> findAllByCarModelContainingAndIsAvailableAndCarBrand(String carModel, boolean isAvailable, CarBrand carBrand, Pageable pageable);
     List<Car> findAllByCarModelContainingAndIsAvailableAndCarBrand(String carModel, boolean isAvailable, CarBrand carBrand);
 
