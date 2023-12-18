@@ -1,5 +1,6 @@
 package com.se.carrenting_backend.service;
 
+import com.se.carrenting_backend.exception.NotFoundException;
 import com.se.carrenting_backend.mapper.VehicleMapper;
 import com.se.carrenting_backend.model.Car;
 import com.se.carrenting_backend.model.dto.VehicleCreateRequest;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class VehicleService {
@@ -27,14 +29,55 @@ public class VehicleService {
         this.vehicleMapper = vehicleMapper;
     }
 
-    public List<VehicleDto> getAll(Integer page, Integer size) {
+    public VehicleResponse getAllCars(Integer page, Integer size, String carBrand, String carModel) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Car> pageContent = vehicleRepository.findAll(pageable);
-        List<Car> carList = pageContent.getContent();
-        List<VehicleDto> vehicleDtoList = vehicleMapper.carListToDtoList(carList);
-
-        return vehicleDtoList;
+        if (carBrand.isEmpty()) {
+            Page<Car> carList = vehicleRepository.findAllByCarModelContaining(carModel, pageable);
+            VehicleResponse vehicleResponse = VehicleResponse.builder()
+                    .vehicleDtoList(vehicleMapper.carListToDtoList(carList.getContent()))
+                    .vehicleAmount(getAmountOfCarsWithModel(carModel))
+                    .isSuccess(true)
+                    .message(HttpStatus.OK.toString())
+                    .build();
+            return vehicleResponse;
+        } else {
+            CarBrand brand = CarBrand.valueOf(carBrand);
+            Page<Car> carList = vehicleRepository.findAllByCarModelContainingAndCarBrand(carModel, brand, pageable);
+            VehicleResponse vehicleResponse = VehicleResponse.builder()
+                    .vehicleDtoList(vehicleMapper.carListToDtoList(carList.getContent()))
+                    .vehicleAmount(getAmountOfCarsWithModelAndBrand(carModel, carBrand))
+                    .isSuccess(true)
+                    .message(HttpStatus.OK.toString())
+                    .build();
+            return vehicleResponse;
+        }
     }
+
+    public Integer getAmountOfCarsWithModel(String carModel) {
+        List<Car> carList = vehicleRepository.findAllByCarModelContaining(carModel);
+        return carList.size();
+    }
+
+    public Integer getAmountOfCarsWithModelAndBrand(String carModel, String carBrand) {
+        CarBrand brand = CarBrand.valueOf(carBrand);
+        List<Car> carList = vehicleRepository.findAllByCarModelContainingAndCarBrand(carModel, brand);
+        return carList.size();
+    }
+
+    public VehicleResponse getVehicle(String licencePlate) {
+        Optional<Car> car = vehicleRepository.findById(licencePlate);
+        if (car.isEmpty()) {
+            throw new NotFoundException("Vehicle not found");
+        }
+        Car newCar = car.get();
+        List<Car> carList = new ArrayList<>();
+        carList.add(newCar);
+        VehicleResponse vehicleResponse = new VehicleResponse();
+        vehicleResponse.setVehicleDtoList(vehicleMapper.carListToDtoList(carList));
+        vehicleResponse.setVehicleAmount(carList.size());
+        return vehicleResponse;
+    }
+
 
     public VehicleDto createVehicle(VehicleCreateRequest request) {
             Car car = Car.builder()
@@ -51,26 +94,6 @@ public class VehicleService {
                     .guestReservationList(new ArrayList<>())
                     .build();
             return vehicleMapper.convertToDto(vehicleRepository.save(car));
-    }
-
-    public Integer getAvailableVehicleAmount() {
-        List<Car> carList = vehicleRepository.findAllByIsAvailable(true);
-        return carList.size();
-    }
-    public List<VehicleDto> getAllAvailableCarsWithPage(Integer page, Integer size) {
-        Pageable pageable = PageRequest.of(page, size);
-        List<Car> carList = vehicleRepository.findAllByIsAvailable(true, pageable);
-        List<VehicleDto> vehicleDtoList = vehicleMapper.carListToDtoList(carList);
-
-        return vehicleDtoList;
-    }
-
-    public List<VehicleDto> getAllAvailableCarsWithModel(Integer page, Integer size, String model) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Car> carList = vehicleRepository.findAllByCarModelContainingAndIsAvailable(model, true, pageable);
-        List<VehicleDto> vehicleDtoList = vehicleMapper.carListToDtoList(carList.getContent());
-
-        return vehicleDtoList;
     }
 
     public Integer getAmountOfAvailableCarsWithModel(String model) {
