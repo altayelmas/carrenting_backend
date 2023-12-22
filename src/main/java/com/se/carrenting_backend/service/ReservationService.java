@@ -62,6 +62,7 @@ public class ReservationService {
         customer.getReservationList().add(customerReservation);
         vehicleRepository.save(car);
         customerRepository.save(customer);
+        customerReservationRepository.save(customerReservation);
         return customerReservationMapper.convertToDto(customerReservation);
 
     }
