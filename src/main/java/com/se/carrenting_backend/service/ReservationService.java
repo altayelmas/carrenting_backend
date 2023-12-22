@@ -15,6 +15,7 @@ import com.se.carrenting_backend.repository.GuestReservationRepository;
 import com.se.carrenting_backend.repository.VehicleRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -48,6 +49,14 @@ public class ReservationService {
             throw new NotFoundException("Customer not found");
         }
         Customer customer = optionalCustomer.get();
+        List<CustomerReservation> reservations = customer.getReservationList();
+
+        if (reservations.size() >= 3 &&
+                reservations.get(reservations.size() - 1).isValid() &&
+                reservations.get(reservations.size() - 2).isValid() &&
+                reservations.get(reservations.size() - 3).isValid()) {
+            throw new NotAvailableException("Customer already has 3 valid reservations");
+        }
 
         Optional<Car> optionalCar = vehicleRepository.findById(reservationCreateRequest.getLicencePlate());
         if (optionalCar.isEmpty()) {
