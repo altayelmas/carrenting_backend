@@ -22,6 +22,4 @@ public interface VehicleRepository extends JpaRepository<Car, String> {
     List<Car> findAllByCarModelContainingAndIsAvailable(String carModel, boolean isAvailable);
     Page<Car> findAllByCarModelContainingAndIsAvailableAndCarBrand(String carModel, boolean isAvailable, CarBrand carBrand, Pageable pageable);
     List<Car> findAllByCarModelContainingAndIsAvailableAndCarBrand(String carModel, boolean isAvailable, CarBrand carBrand);
-    //Car findByLicencePlate(String licencePlate);
-
 }

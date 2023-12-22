@@ -65,13 +65,13 @@ public class VehicleService {
     }
 
     public VehicleResponse getVehicle(String licencePlate) {
-        Optional<Car> car = vehicleRepository.findById(licencePlate);
-        if (car.isEmpty()) {
+        Optional<Car> optionalCar = vehicleRepository.findById(licencePlate);
+        if (optionalCar.isEmpty()) {
             throw new NotFoundException("Vehicle not found");
         }
-        Car newCar = car.get();
+        Car car = optionalCar.get();
         List<Car> carList = new ArrayList<>();
-        carList.add(newCar);
+        carList.add(car);
         VehicleResponse vehicleResponse = new VehicleResponse();
         vehicleResponse.setVehicleDtoList(vehicleMapper.carListToDtoList(carList));
         vehicleResponse.setVehicleAmount(carList.size());
