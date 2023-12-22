@@ -1,5 +1,6 @@
 package com.se.carrenting_backend.service;
 
+import com.se.carrenting_backend.exception.NotAvailableException;
 import com.se.carrenting_backend.exception.NotFoundException;
 import com.se.carrenting_backend.mapper.CustomerReservationMapper;
 import com.se.carrenting_backend.mapper.GuestReservationMapper;
@@ -53,6 +54,10 @@ public class ReservationService {
             throw new NotFoundException("Car not found");
         }
         Car car = optionalCar.get();
+
+        if (!car.isAvailable()) {
+            throw new NotAvailableException("Car is not available");
+        }
 
         CustomerReservation customerReservation = CustomerReservation.builder()
                 .customer(customer)
