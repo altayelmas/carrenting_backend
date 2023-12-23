@@ -12,8 +12,8 @@ import lombok.*;
 public class CustomerReservation extends Reservation {
 
     @ManyToOne
-    @JoinColumn(name = "customer_id", referencedColumnName = "idNumber")
-    private Customer customer;
+    @JoinColumn(name = "user_id", referencedColumnName = "idNumber")
+    private User user;
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "licence_plate", referencedColumnName = "licencePlate")
     private Car car;

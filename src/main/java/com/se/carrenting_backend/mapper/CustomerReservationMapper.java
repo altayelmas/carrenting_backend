@@ -12,7 +12,7 @@ public class CustomerReservationMapper {
                 .beginDate(customerReservation.getBeginDate())
                 .endDate(customerReservation.getEndDate())
                 .isValid(false)
-                .idNumber(customerReservation.getCustomer().getIdNumber())
+                .idNumber(customerReservation.getUser().getIdNumber().toString())
                 .licencePlate(customerReservation.getCar().getLicencePlate())
                 .build();
     }

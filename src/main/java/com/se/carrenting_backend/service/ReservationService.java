@@ -5,14 +5,11 @@ import com.se.carrenting_backend.exception.NotFoundException;
 import com.se.carrenting_backend.mapper.CustomerReservationMapper;
 import com.se.carrenting_backend.mapper.GuestReservationMapper;
 import com.se.carrenting_backend.model.Car;
-import com.se.carrenting_backend.model.Customer;
 import com.se.carrenting_backend.model.CustomerReservation;
+import com.se.carrenting_backend.model.User;
 import com.se.carrenting_backend.model.dto.CustomerReservationCreateRequest;
 import com.se.carrenting_backend.model.dto.CustomerReservationDto;
-import com.se.carrenting_backend.repository.CustomerRepository;
-import com.se.carrenting_backend.repository.CustomerReservationRepository;
-import com.se.carrenting_backend.repository.GuestReservationRepository;
-import com.se.carrenting_backend.repository.VehicleRepository;
+import com.se.carrenting_backend.repository.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,7 +23,7 @@ public class ReservationService {
     private final GuestReservationMapper guestReservationMapper;
 
     private final VehicleRepository vehicleRepository;
-    private final CustomerRepository customerRepository;
+    private final UserRepository userRepository;
 
 
     public ReservationService(CustomerReservationRepository customerReservationRepository,
@@ -34,22 +31,22 @@ public class ReservationService {
                               GuestReservationRepository guestReservationRepository,
                               GuestReservationMapper guestReservationMapper,
                               VehicleRepository vehicleRepository,
-                              CustomerRepository customerRepository) {
+                              UserRepository userRepository) {
         this.customerReservationRepository = customerReservationRepository;
         this.customerReservationMapper = customerReservationMapper;
         this.guestReservationRepository = guestReservationRepository;
         this.guestReservationMapper = guestReservationMapper;
         this.vehicleRepository = vehicleRepository;
-        this.customerRepository = customerRepository;
+        this.userRepository = userRepository;
     }
 
     public CustomerReservationDto createReservation(CustomerReservationCreateRequest reservationCreateRequest) {
-        Optional<Customer> optionalCustomer = customerRepository.findById(reservationCreateRequest.getIdNumber());
-        if (optionalCustomer.isEmpty()) {
+        Optional<User> optionalUser = userRepository.findById(reservationCreateRequest.getIdNumber());
+        if (optionalUser.isEmpty()) {
             throw new NotFoundException("Customer not found");
         }
-        Customer customer = optionalCustomer.get();
-        List<CustomerReservation> reservations = customer.getReservationList();
+        User user = optionalUser.get();
+        List<CustomerReservation> reservations = user.getReservationList();
 
         if (reservations.size() >= 3 &&
                 reservations.get(reservations.size() - 1).isValid() &&
@@ -69,13 +66,13 @@ public class ReservationService {
         }
 
         CustomerReservation customerReservation = CustomerReservation.builder()
-                .customer(customer)
+                .user(user)
                 .car(car)
                 .build();
         car.getCustomerReservationList().add(customerReservation);
-        customer.getReservationList().add(customerReservation);
+        user.getReservationList().add(customerReservation);
         vehicleRepository.save(car);
-        customerRepository.save(customer);
+        userRepository.save(user);
         customerReservationRepository.save(customerReservation);
         return customerReservationMapper.convertToDto(customerReservation);
 

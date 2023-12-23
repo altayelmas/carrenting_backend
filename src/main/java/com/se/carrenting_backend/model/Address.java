@@ -21,5 +21,5 @@ public class Address {
     private String postCode;
     @OneToOne
     @JoinColumn(name = "id_number", referencedColumnName = "idNumber")
-    private Customer customer;
+    private User user;
 }

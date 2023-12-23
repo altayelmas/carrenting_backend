@@ -1,15 +1,32 @@
 package com.se.carrenting_backend.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@MappedSuperclass
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+import java.util.List;
+import java.util.UUID;
+
 @Getter
-public abstract class User {
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Table(name="users")
+public class User {
     @Id
-    private String idNumber;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer idNumber;
+    @Column(unique = true)
     private String email;
+    @Column(unique = true)
+    private String username;
     private String password;
-
+    @OneToOne
+    private Address address;
+    @OneToMany
+    private List<CustomerReservation> reservationList;
+    private String roles;
 }
