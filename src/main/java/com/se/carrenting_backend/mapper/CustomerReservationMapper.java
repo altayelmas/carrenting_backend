@@ -4,6 +4,9 @@ import com.se.carrenting_backend.model.CustomerReservation;
 import com.se.carrenting_backend.model.dto.CustomerReservationDto;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
 public class CustomerReservationMapper {
     public CustomerReservationDto convertToDto(CustomerReservation customerReservation){
@@ -15,5 +18,13 @@ public class CustomerReservationMapper {
                 .idNumber(customerReservation.getUser().getIdNumber().toString())
                 .licencePlate(customerReservation.getCar().getLicencePlate())
                 .build();
+    }
+
+    public List<CustomerReservationDto> customerReservationToDtoList(List<CustomerReservation> customerReservationList) {
+        List<CustomerReservationDto> customerReservationDtoList = new ArrayList<>();
+        for (CustomerReservation customerReservation: customerReservationList ) {
+            customerReservationDtoList.add(convertToDto(customerReservation));
+        }
+        return customerReservationDtoList;
     }
 }

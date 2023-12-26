@@ -11,12 +11,16 @@ import com.se.carrenting_backend.model.dto.CustomerReservationCreateRequest;
 import com.se.carrenting_backend.model.dto.CustomerReservationDto;
 import com.se.carrenting_backend.model.dto.ReservationResponse;
 import com.se.carrenting_backend.repository.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -88,6 +92,7 @@ public class ReservationService {
                 .car(car)
                 .build();
         customerReservation.setPrice(price);
+        customerReservation.setValid(false);
         car.getCustomerReservationList().add(customerReservation);
         car.setAvailable(false);
         user.getReservationList().add(customerReservation);
@@ -96,13 +101,54 @@ public class ReservationService {
         customerReservationRepository.save(customerReservation);
 
         CustomerReservationDto customerReservationDto = customerReservationMapper.convertToDto(customerReservation);
+        List<CustomerReservationDto> customerReservationDtoList = new ArrayList<>();
+        customerReservationDtoList.add(customerReservationDto);
         return ReservationResponse.builder()
-                .customerReservationDto(customerReservationDto)
+                .customerReservationDto(customerReservationDtoList)
+                .size(1)
                 .isSuccess(true)
                 .message(HttpStatus.OK.toString())
                 .build();
-
     }
 
 
+    public ReservationResponse getAllReservations(Integer page, Integer size, Integer userId) {
+        Pageable pageable = PageRequest.of(page, size);
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) {
+            throw new NotFoundException("User not found");
+        }
+        User user = optionalUser.get();
+        Page<CustomerReservation> customerReservationPage = customerReservationRepository.findAllByUser(user, pageable);
+        return ReservationResponse.builder()
+                .customerReservationDto(customerReservationMapper.customerReservationToDtoList(
+                        customerReservationPage.getContent()))
+                .size(getAmountOfReservations(userId))
+                .isSuccess(true)
+                .message(HttpStatus.OK.toString())
+                .build();
+    }
+
+    public Integer getAmountOfReservations(Integer userId) {
+        User user = userRepository.getReferenceById(userId);
+        return customerReservationRepository.findAllByUser(user).size();
+    }
+
+    public ReservationResponse validateReservation(Integer reservationId) {
+        Optional<CustomerReservation> optionalCustomerReservation = customerReservationRepository.findById(reservationId);
+        if (optionalCustomerReservation.isEmpty()) {
+            throw new NotFoundException("Reservation not found");
+        }
+        CustomerReservation customerReservation = optionalCustomerReservation.get();
+        customerReservation.setValid(true);
+        customerReservationRepository.save(customerReservation);
+        List<CustomerReservationDto> customerReservationDtoList = new ArrayList<>();
+        customerReservationDtoList.add(customerReservationMapper.convertToDto(customerReservation));
+        return new ReservationResponse().builder()
+                .customerReservationDto(customerReservationDtoList)
+                .size(1)
+                .isSuccess(true)
+                .message(HttpStatus.OK.toString())
+                .build();
+    }
 }
