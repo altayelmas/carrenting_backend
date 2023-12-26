@@ -43,7 +43,13 @@ public class SecurityConfiguration {
 /*
                 .anyRequest().authenticated()
 */
-                .requestMatchers("/user/login", "/user/signup", "/vehicle/getAllAvailableCars**").permitAll()
+                .requestMatchers("/user/login",
+                        "/user/signup",
+                        "/vehicle/getAllAvailableCars**",
+                        "/vehicle/get/*").permitAll()
+                .requestMatchers("/vehicle/create",
+                        "/vehicle/getAllCars").hasRole("ADMIN")
+                .requestMatchers("/reservation/createReservation").hasRole("USER")
                 .and()
                 .authorizeHttpRequests().anyRequest().authenticated()
                 .and()

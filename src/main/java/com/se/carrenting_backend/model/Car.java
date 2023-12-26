@@ -23,6 +23,7 @@ public class Car {
     private CarBrand carBrand;
     private String carModel;
     private Engine engine;
+    private Integer price;
     private Integer seats;
     private boolean isAvailable;
     @Column(length = 100000)

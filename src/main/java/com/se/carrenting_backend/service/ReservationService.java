@@ -9,9 +9,14 @@ import com.se.carrenting_backend.model.CustomerReservation;
 import com.se.carrenting_backend.model.User;
 import com.se.carrenting_backend.model.dto.CustomerReservationCreateRequest;
 import com.se.carrenting_backend.model.dto.CustomerReservationDto;
+import com.se.carrenting_backend.model.dto.ReservationResponse;
 import com.se.carrenting_backend.repository.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,7 +45,7 @@ public class ReservationService {
         this.userRepository = userRepository;
     }
 
-    public CustomerReservationDto createReservation(CustomerReservationCreateRequest reservationCreateRequest) {
+    public ReservationResponse createReservation(CustomerReservationCreateRequest reservationCreateRequest) {
         Optional<User> optionalUser = userRepository.findById(reservationCreateRequest.getIdNumber());
         if (optionalUser.isEmpty()) {
             throw new NotFoundException("Customer not found");
@@ -64,17 +69,38 @@ public class ReservationService {
         if (!car.isAvailable()) {
             throw new NotAvailableException("Car is not available");
         }
+        if (reservationCreateRequest.getBeginDate().after(reservationCreateRequest.getEndDate())) {
+            throw new NotAvailableException("Begin date can't be later than end date");
+        }
 
+        LocalDateTime beginDate = reservationCreateRequest.getBeginDate()
+                .toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+        LocalDateTime endDate = reservationCreateRequest.getEndDate()
+                .toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+
+        Integer price = Math.toIntExact((car.getPrice() / 24) * ChronoUnit.HOURS.between(beginDate, endDate));
         CustomerReservation customerReservation = CustomerReservation.builder()
                 .user(user)
                 .car(car)
                 .build();
+        customerReservation.setPrice(price);
         car.getCustomerReservationList().add(customerReservation);
+        car.setAvailable(false);
         user.getReservationList().add(customerReservation);
         vehicleRepository.save(car);
         userRepository.save(user);
         customerReservationRepository.save(customerReservation);
-        return customerReservationMapper.convertToDto(customerReservation);
+
+        CustomerReservationDto customerReservationDto = customerReservationMapper.convertToDto(customerReservation);
+        return ReservationResponse.builder()
+                .customerReservationDto(customerReservationDto)
+                .isSuccess(true)
+                .message(HttpStatus.OK.toString())
+                .build();
 
     }
 
