@@ -1,8 +1,7 @@
 package com.se.carrenting_backend.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Date;
 
@@ -16,5 +15,6 @@ public abstract class Reservation {
     private Integer reservationId;
     private Date beginDate;
     private Date endDate;
+    private Integer price;
     private boolean isValid;
 }

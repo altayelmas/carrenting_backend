@@ -14,6 +14,7 @@ public class VehicleDto {
     private CarBrand carBrand;
     private String carModel;
     private GearType gearType;
+    private Integer price;
     private Integer seats;
     private boolean isAvailable;
     private String img;
