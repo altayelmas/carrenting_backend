@@ -39,6 +39,8 @@ public class UserController {
             String token = jwtService.generateToken(loginRequest.getUsername());
             LoginResponse loginResponse = new LoginResponse();
             loginResponse.setAuthToken(token);
+            loginResponse.setUsername(loginRequest.getUsername());
+            loginResponse.setRoles(userService.getRoles(loginRequest.getUsername()));
             return ResponseEntity.ok(loginResponse);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

@@ -1,15 +1,13 @@
 package com.se.carrenting_backend.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 import java.util.UUID;
 
 @Getter
+@Setter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,7 +22,7 @@ public class User {
     @Column(unique = true)
     private String username;
     private String password;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Address address;
     @OneToMany
     private List<CustomerReservation> reservationList;
