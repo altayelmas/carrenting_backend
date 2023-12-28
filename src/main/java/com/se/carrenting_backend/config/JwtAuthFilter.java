@@ -1,13 +1,11 @@
 package com.se.carrenting_backend.config;
 
-import com.se.carrenting_backend.model.User;
 import com.se.carrenting_backend.service.JwtService;
 import com.se.carrenting_backend.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;

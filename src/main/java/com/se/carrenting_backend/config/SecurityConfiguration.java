@@ -40,19 +40,18 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf().disable()
                 .authorizeHttpRequests()
-/*
-                .anyRequest().authenticated()
-*/
                 .requestMatchers("/user/login",
                         "/user/signup",
                         "/vehicle/getAllAvailableCars**",
                         "/vehicle/get/*").permitAll()
-                .requestMatchers("/vehicle/create",
-                        "/vehicle/getAllCars").hasRole("ADMIN")
-                .requestMatchers("/reservation/createReservation").hasRole("USER")
+                .requestMatchers(
+                        //"/vehicle/create",
+                        "/vehicle/getAllCars", "/vehicle/create").hasAuthority("ADMIN")
+                .requestMatchers("/reservation/createReservation").hasAuthority("USER")
+                .anyRequest().authenticated()
                 .and()
-                .authorizeHttpRequests().anyRequest().authenticated()
-                .and()
+                //.authorizeHttpRequests().anyRequest().authenticated()
+                //.and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()

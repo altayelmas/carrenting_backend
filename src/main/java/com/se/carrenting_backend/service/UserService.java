@@ -32,6 +32,7 @@ public class UserService implements UserDetailsService {
                 .email(signupRequest.getEmail())
                 .username(signupRequest.getUsername())
                 .password(passwordEncoder.encode(signupRequest.getPassword()))
+                .roles("USER")
                 .build();
         userRepository.save(user);
         UserResponse userResponse = new UserResponse();
