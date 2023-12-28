@@ -1,21 +1,21 @@
 package com.se.carrenting_backend.controller;
 
 import com.se.carrenting_backend.model.dto.LoginRequest;
+import com.se.carrenting_backend.model.dto.LoginResponse;
 import com.se.carrenting_backend.model.dto.SignupRequest;
 import com.se.carrenting_backend.model.dto.UserResponse;
 import com.se.carrenting_backend.service.JwtService;
 import com.se.carrenting_backend.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
+@CrossOrigin("http://localhost:3000")
 public class UserController {
     private final UserService userService;
     private final JwtService jwtService;
@@ -28,7 +28,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) throws Exception {
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) throws Exception {
         /*String token = jwtService.generateToken(loginRequest.getUsername());
         return ResponseEntity.ok(token);*/
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
@@ -37,10 +37,15 @@ public class UserController {
 
         if (authentication.isAuthenticated()) {
             String token = jwtService.generateToken(loginRequest.getUsername());
-            return ResponseEntity.ok(token);
+            LoginResponse loginResponse = new LoginResponse();
+            loginResponse.setAuthToken(token);
+            loginResponse.setUsername(loginRequest.getUsername());
+            loginResponse.setRoles(userService.getRoles(loginRequest.getUsername()));
+            return ResponseEntity.ok(loginResponse);
         } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             // TODO - Implement new exception
-            throw new Exception("asd");
+            //throw new Exception("asd");
         }
     }
 
