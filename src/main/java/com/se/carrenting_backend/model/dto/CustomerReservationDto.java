@@ -13,6 +13,6 @@ public class CustomerReservationDto {
     private Date beginDate;
     private Date endDate;
     private boolean isValid;
-    private String idNumber;
+    private String username;
     private String licencePlate;
 }

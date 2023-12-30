@@ -15,7 +15,7 @@ public class CustomerReservationMapper {
                 .beginDate(customerReservation.getBeginDate())
                 .endDate(customerReservation.getEndDate())
                 .isValid(false)
-                .idNumber(customerReservation.getUser().getIdNumber().toString())
+                .username(customerReservation.getUser().getUsername())
                 .licencePlate(customerReservation.getCar().getLicencePlate())
                 .build();
     }
