@@ -108,23 +108,45 @@ public class ReservationService {
     public ReservationResponse getAllReservations(Integer page, Integer size, String username) {
         Pageable pageable = PageRequest.of(page, size);
         Optional<User> optionalUser = userRepository.findByUsername(username);
-        if (optionalUser.isEmpty()) {
-            throw new NotFoundException("User not found");
+        if (username.isEmpty()) {
+            Page<CustomerReservation> customerReservationPage = customerReservationRepository.findAll(pageable);
+            return ReservationResponse.builder()
+                    .customerReservationDto(customerReservationMapper.customerReservationToDtoList(
+                            customerReservationPage.getContent()
+                    ))
+                    .size(getAmountOfReservations())
+                    .isSuccess(true)
+                    .message(HttpStatus.OK.toString())
+                    .build();
+        } else {
+            if (optionalUser.isEmpty()) {
+                return ReservationResponse.builder()
+                        .customerReservationDto(new ArrayList<>())
+                        .size(0)
+                        .isSuccess(true)
+                        .message(HttpStatus.OK.toString())
+                        .build();
+            } else {
+                User user = optionalUser.get();
+                Page<CustomerReservation> customerReservationPage = customerReservationRepository.findAllByUser(user, pageable);
+                return ReservationResponse.builder()
+                        .customerReservationDto(customerReservationMapper.customerReservationToDtoList(
+                                customerReservationPage.getContent()))
+                        .size(getAmountOfReservationsWithUsername(username))
+                        .isSuccess(true)
+                        .message(HttpStatus.OK.toString())
+                        .build();
+            }
         }
-        User user = optionalUser.get();
-        Page<CustomerReservation> customerReservationPage = customerReservationRepository.findAllByUser(user, pageable);
-        return ReservationResponse.builder()
-                .customerReservationDto(customerReservationMapper.customerReservationToDtoList(
-                        customerReservationPage.getContent()))
-                .size(getAmountOfReservations(username))
-                .isSuccess(true)
-                .message(HttpStatus.OK.toString())
-                .build();
     }
 
-    public Integer getAmountOfReservations(String username) {
+    public Integer getAmountOfReservationsWithUsername(String username) {
         User user = userRepository.findByUsername(username).get();
         return customerReservationRepository.findAllByUser(user).size();
+    }
+
+    public Integer getAmountOfReservations() {
+        return customerReservationRepository.findAll().size();
     }
 
     public ReservationResponse validateReservation(Integer reservationId) {
