@@ -11,7 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 public class CustomerReservation extends Reservation {
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "idNumber")
     private User user;
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

@@ -87,6 +87,7 @@ public class VehicleService {
                     .carBrand(request.getCarBrand())
                     .carModel(request.getCarModel())
                     .engine(request.getEngine())
+                    .price(request.getPrice())
                     .seats(request.getSeats())
                     .isAvailable(true)
                     .img(request.getImg())
