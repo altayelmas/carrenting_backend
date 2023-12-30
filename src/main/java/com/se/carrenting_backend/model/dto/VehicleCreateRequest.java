@@ -15,6 +15,7 @@ public class VehicleCreateRequest {
     private CarBrand carBrand;
     private String carModel;
     private Engine engine;
+    private Integer price;
     private Integer seats;
     private String img;
 }

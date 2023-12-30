@@ -11,6 +11,7 @@ import java.util.Date;
 public class CustomerReservationCreateRequest {
     private Date beginDate;
     private Date endDate;
-    private Integer idNumber;
     private String licencePlate;
+    private String username;
+    private Integer price;
 }

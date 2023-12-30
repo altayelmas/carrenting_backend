@@ -50,7 +50,8 @@ public class ReservationService {
     }
 
     public ReservationResponse createReservation(CustomerReservationCreateRequest reservationCreateRequest) {
-        Optional<User> optionalUser = userRepository.findById(reservationCreateRequest.getIdNumber());
+
+        Optional<User> optionalUser = userRepository.findByUsername(reservationCreateRequest.getUsername());
         if (optionalUser.isEmpty()) {
             throw new NotFoundException("Customer not found");
         }
@@ -77,28 +78,20 @@ public class ReservationService {
             throw new NotAvailableException("Begin date can't be later than end date");
         }
 
-        LocalDateTime beginDate = reservationCreateRequest.getBeginDate()
-                .toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDateTime();
-        LocalDateTime endDate = reservationCreateRequest.getEndDate()
-                .toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDateTime();
-
-        Integer price = Math.toIntExact((car.getPrice() / 24) * ChronoUnit.HOURS.between(beginDate, endDate));
         CustomerReservation customerReservation = CustomerReservation.builder()
                 .user(user)
                 .car(car)
                 .build();
-        customerReservation.setPrice(price);
+        customerReservation.setPrice(reservationCreateRequest.getPrice());
         customerReservation.setValid(false);
+        customerReservation.setBeginDate(reservationCreateRequest.getBeginDate());
+        customerReservation.setEndDate(reservationCreateRequest.getEndDate());
         car.getCustomerReservationList().add(customerReservation);
         car.setAvailable(false);
         user.getReservationList().add(customerReservation);
+        customerReservationRepository.save(customerReservation);
         vehicleRepository.save(car);
         userRepository.save(user);
-        customerReservationRepository.save(customerReservation);
 
         CustomerReservationDto customerReservationDto = customerReservationMapper.convertToDto(customerReservation);
         List<CustomerReservationDto> customerReservationDtoList = new ArrayList<>();
