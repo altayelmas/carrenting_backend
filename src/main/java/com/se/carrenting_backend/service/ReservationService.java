@@ -105,9 +105,9 @@ public class ReservationService {
     }
 
 
-    public ReservationResponse getAllReservations(Integer page, Integer size, Integer userId) {
+    public ReservationResponse getAllReservations(Integer page, Integer size, String username) {
         Pageable pageable = PageRequest.of(page, size);
-        Optional<User> optionalUser = userRepository.findById(userId);
+        Optional<User> optionalUser = userRepository.findByUsername(username);
         if (optionalUser.isEmpty()) {
             throw new NotFoundException("User not found");
         }
@@ -116,14 +116,14 @@ public class ReservationService {
         return ReservationResponse.builder()
                 .customerReservationDto(customerReservationMapper.customerReservationToDtoList(
                         customerReservationPage.getContent()))
-                .size(getAmountOfReservations(userId))
+                .size(getAmountOfReservations(username))
                 .isSuccess(true)
                 .message(HttpStatus.OK.toString())
                 .build();
     }
 
-    public Integer getAmountOfReservations(Integer userId) {
-        User user = userRepository.getReferenceById(userId);
+    public Integer getAmountOfReservations(String username) {
+        User user = userRepository.findByUsername(username).get();
         return customerReservationRepository.findAllByUser(user).size();
     }
 
