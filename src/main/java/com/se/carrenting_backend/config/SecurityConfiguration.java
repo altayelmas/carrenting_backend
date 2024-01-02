@@ -46,7 +46,10 @@ public class SecurityConfiguration {
                         "/vehicle/get/*").permitAll()
                 .requestMatchers(
                         //"/vehicle/create",
-                        "/vehicle/getAllCars**", "/vehicle/create").hasAuthority("ADMIN")
+                        "/vehicle/getAllCars**",
+                        "/vehicle/create",
+                        "/reservation/getAll**",
+                        "/reservation/validateReservation**").hasAuthority("ADMIN")
                 .requestMatchers("/reservation/createReservation").hasAnyAuthority("USER")
                 .anyRequest().authenticated()
                 .and()

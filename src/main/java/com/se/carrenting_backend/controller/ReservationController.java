@@ -47,8 +47,8 @@ public class ReservationController {
     @GetMapping("/getAll")
     public ResponseEntity<ReservationResponse> getAllReservations(@RequestParam Integer page,
                                                                   @RequestParam Integer size,
-                                                                  @RequestParam Integer userId) {
-        ReservationResponse reservationResponse = reservationService.getAllReservations(page, size, userId);
+                                                                  @RequestParam String username) {
+        ReservationResponse reservationResponse = reservationService.getAllReservations(page, size, username);
         return new ResponseEntity<>(reservationResponse, HttpStatus.OK);
     }
 
