@@ -89,7 +89,7 @@ public class ReservationService {
         car.getCustomerReservationList().add(customerReservation);
         car.setAvailable(false);
         user.getReservationList().add(customerReservation);
-        customerReservationRepository.save(customerReservation);
+        customerReservation = customerReservationRepository.save(customerReservation);
         vehicleRepository.save(car);
         userRepository.save(user);
 

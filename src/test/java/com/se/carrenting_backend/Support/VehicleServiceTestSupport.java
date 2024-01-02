@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class VehicleServiceTestSupport {
-    public static VehicleCreateRequest createVehicleRequest(String licencePlate) {
+    public static VehicleCreateRequest generateVehicleRequest(String licencePlate) {
         return VehicleCreateRequest.builder()
                 .licencePlate(licencePlate)
                 .carType(CarType.Sedan)
@@ -26,7 +26,7 @@ public class VehicleServiceTestSupport {
                 .build();
     }
 
-    public static Car createCar(String licencePlate) {
+    public static Car generateCar(String licencePlate) {
         return Car.builder()
                 .licencePlate(licencePlate)
                 .carType(CarType.Sedan)
@@ -42,7 +42,7 @@ public class VehicleServiceTestSupport {
                 .build();
     }
 
-    public static VehicleDto createVehicleDto(String licencePlate) {
+    public static VehicleDto generateVehicleDto(String licencePlate) {
         return VehicleDto.builder()
                 .licencePlate(licencePlate)
                 .carType(CarType.Sedan)
@@ -56,7 +56,7 @@ public class VehicleServiceTestSupport {
                 .build();
     }
 
-    public static List<Car> createCarList(Integer amount) {
+    public static List<Car> generateCarList(Integer amount) {
         List<Car> carList = new ArrayList<>();
         for (int i = 0; i < amount; i++) {
             carList.add(Car.builder()
@@ -74,7 +74,7 @@ public class VehicleServiceTestSupport {
         return carList;
     }
 
-    public static List<VehicleDto> createVehicleDtoList(Integer amount) {
+    public static List<VehicleDto> generateVehicleDtoList(Integer amount) {
         List<VehicleDto> vehicleDtoList = new ArrayList<>();
         for (int i = 0; i < amount; i++) {
             vehicleDtoList.add(VehicleDto.builder()
@@ -92,9 +92,9 @@ public class VehicleServiceTestSupport {
         return vehicleDtoList;
     }
 
-    public static VehicleResponse createVehicleResponse(Integer amount) {
+    public static VehicleResponse generateVehicleResponse(Integer amount) {
         return VehicleResponse.builder()
-                .vehicleDtoList(createVehicleDtoList(amount))
+                .vehicleDtoList(generateVehicleDtoList(amount))
                 .vehicleAmount(amount)
                 .isSuccess(true)
                 .message(HttpStatus.OK.toString())
