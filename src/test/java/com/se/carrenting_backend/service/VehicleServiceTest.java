@@ -35,9 +35,9 @@ public class VehicleServiceTest {
 
     @Test
     public void createVehicleTest() {
-        VehicleCreateRequest vehicleCreateRequest = VehicleServiceTestSupport.createVehicleRequest("34ABC1");
-        Car car = VehicleServiceTestSupport.createCar("34ABC1");
-        VehicleDto vehicleDto = VehicleServiceTestSupport.createVehicleDto("34ABC1");
+        VehicleCreateRequest vehicleCreateRequest = VehicleServiceTestSupport.generateVehicleRequest("34ABC1");
+        Car car = VehicleServiceTestSupport.generateCar("34ABC1");
+        VehicleDto vehicleDto = VehicleServiceTestSupport.generateVehicleDto("34ABC1");
         when(vehicleRepository.save(any())).thenReturn(car);
         when(vehicleMapper.convertToDto(car)).thenReturn(vehicleDto);
 
@@ -47,7 +47,7 @@ public class VehicleServiceTest {
 
     @Test
     public void createVehicleTest_whenLicencePlateIsShorterThanSixCharacters() {
-        VehicleCreateRequest vehicleCreateRequest = VehicleServiceTestSupport.createVehicleRequest("34AB1");
+        VehicleCreateRequest vehicleCreateRequest = VehicleServiceTestSupport.generateVehicleRequest("34AB1");
         assertThrows(InputMismatchException.class, () -> vehicleService.createVehicle(vehicleCreateRequest));
         verifyNoInteractions(vehicleRepository);
         verifyNoInteractions(vehicleMapper);
@@ -55,7 +55,7 @@ public class VehicleServiceTest {
 
     @Test
     public void createVehicleTest_whenLicencePlateIsNotValid() {
-        VehicleCreateRequest vehicleCreateRequest = VehicleServiceTestSupport.createVehicleRequest("82ABC1");
+        VehicleCreateRequest vehicleCreateRequest = VehicleServiceTestSupport.generateVehicleRequest("82ABC1");
         assertThrows(InputMismatchException.class, () -> vehicleService.createVehicle(vehicleCreateRequest));
         verifyNoInteractions(vehicleRepository);
         verifyNoInteractions(vehicleMapper);
@@ -63,7 +63,7 @@ public class VehicleServiceTest {
 
     @Test
     public void createVehicleTest_whenLicencePlateStartIsNotValid() {
-        VehicleCreateRequest vehicleCreateRequest = VehicleServiceTestSupport.createVehicleRequest("ABC123");
+        VehicleCreateRequest vehicleCreateRequest = VehicleServiceTestSupport.generateVehicleRequest("ABC123");
         assertThrows(NumberFormatException.class, () -> vehicleService.createVehicle(vehicleCreateRequest));
         verifyNoInteractions(vehicleRepository);
         verifyNoInteractions(vehicleMapper);
@@ -71,12 +71,12 @@ public class VehicleServiceTest {
 
     @Test
     public void getAllCars() {
-        List<Car> carList = VehicleServiceTestSupport.createCarList(3);
-        List<VehicleDto> vehicleDtoList = VehicleServiceTestSupport.createVehicleDtoList(3);
+        List<Car> carList = VehicleServiceTestSupport.generateCarList(3);
+        List<VehicleDto> vehicleDtoList = VehicleServiceTestSupport.generateVehicleDtoList(3);
         when(vehicleRepository.findAllByCarModelContaining("", PageRequest.of(0, 3)))
                 .thenReturn(new PageImpl<>(carList, PageRequest.of(0, 3), carList.size()));
         when(vehicleMapper.carListToDtoList(carList)).thenReturn(vehicleDtoList);
-        VehicleResponse vehicleResponse = VehicleServiceTestSupport.createVehicleResponse(3);
+        VehicleResponse vehicleResponse = VehicleServiceTestSupport.generateVehicleResponse(3);
 
         VehicleResponse result = vehicleService.getAllCars(0, 3, "", "");
         assertEquals(vehicleResponse.getVehicleDtoList(), result.getVehicleDtoList());
