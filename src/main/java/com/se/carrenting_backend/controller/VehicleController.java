@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 
 @RestController
 @RequestMapping("/vehicle")
@@ -23,7 +24,11 @@ public class VehicleController {
 
     @PostMapping("/create")
     public ResponseEntity<VehicleDto> createVehicle(@RequestBody VehicleCreateRequest request) {
-        return ResponseEntity.ok(vehicleService.createVehicle(request));
+        try {
+            return ResponseEntity.ok(vehicleService.createVehicle(request));
+        } catch (InputMismatchException | NumberFormatException exception) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @GetMapping("/getAllCars")
