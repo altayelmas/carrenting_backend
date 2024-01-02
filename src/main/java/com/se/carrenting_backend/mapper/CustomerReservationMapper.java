@@ -17,6 +17,7 @@ public class CustomerReservationMapper {
                 .isValid(customerReservation.isValid())
                 .username(customerReservation.getUser().getUsername())
                 .licencePlate(customerReservation.getCar().getLicencePlate())
+                .price(customerReservation.getPrice())
                 .build();
     }
 

@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Optional;
 
@@ -80,21 +81,31 @@ public class VehicleService {
 
 
     public VehicleDto createVehicle(VehicleCreateRequest request) {
-            Car car = Car.builder()
-                    .licencePlate(request.getLicencePlate())
-                    .carType(request.getCarType())
-                    .gearType(request.getGearType())
-                    .carBrand(request.getCarBrand())
-                    .carModel(request.getCarModel())
-                    .engine(request.getEngine())
-                    .price(request.getPrice())
-                    .seats(request.getSeats())
-                    .isAvailable(true)
-                    .img(request.getImg())
-                    .customerReservationList(new ArrayList<>())
-                    .guestReservationList(new ArrayList<>())
-                    .build();
-            return vehicleMapper.convertToDto(vehicleRepository.save(car));
+            String licencePlate = request.getLicencePlate();;
+            if (licencePlate.length() <= 5) {
+                throw new InputMismatchException("Licence plate cannot be shorter than 6 characters");
+            } else {
+                if (!(Integer.parseInt(licencePlate.substring(0, 2)) >= 1 &&
+                        Integer.parseInt(licencePlate.substring(0, 2)) <= 81)) {
+                    throw new InputMismatchException("Licence plate should start with a number between 01 and 81");
+                } else {
+                    Car car = Car.builder()
+                            .licencePlate(request.getLicencePlate())
+                            .carType(request.getCarType())
+                            .gearType(request.getGearType())
+                            .carBrand(request.getCarBrand())
+                            .carModel(request.getCarModel())
+                            .engine(request.getEngine())
+                            .price(request.getPrice())
+                            .seats(request.getSeats())
+                            .isAvailable(true)
+                            .img(request.getImg())
+                            .customerReservationList(new ArrayList<>())
+                            .guestReservationList(new ArrayList<>())
+                            .build();
+                    return vehicleMapper.convertToDto(vehicleRepository.save(car));
+                }
+            }
     }
 
     public Integer getAmountOfAvailableCarsWithModel(String model) {
