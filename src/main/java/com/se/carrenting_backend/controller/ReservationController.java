@@ -5,6 +5,7 @@ import com.se.carrenting_backend.exception.NotFoundException;
 import com.se.carrenting_backend.model.dto.CustomerReservationCreateRequest;
 import com.se.carrenting_backend.model.dto.ReservationResponse;
 import com.se.carrenting_backend.service.ReservationService;
+import org.apache.tomcat.util.http.parser.Authorization;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -63,6 +64,22 @@ public class ReservationController {
                     .size(0)
                     .message(notFoundException.getMessage())
                     .isSuccess(false)
+                    .build();
+            return new ResponseEntity<>(reservationResponse, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/getMyReservations")
+    public ResponseEntity<ReservationResponse> getReservationsOfUser(@RequestHeader String token) {
+        try {
+            ReservationResponse reservationResponse = reservationService.getReservationsOfUser(token);
+            return new ResponseEntity<>(reservationResponse, HttpStatus.OK);
+        } catch (NotFoundException notFoundException) {
+            ReservationResponse reservationResponse = ReservationResponse.builder()
+                    .customerReservationDto(new ArrayList<>())
+                    .isSuccess(false)
+                    .message(notFoundException.getMessage())
+                    .size(0)
                     .build();
             return new ResponseEntity<>(reservationResponse, HttpStatus.NOT_FOUND);
         }

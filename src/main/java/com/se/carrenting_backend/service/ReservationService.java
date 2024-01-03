@@ -33,6 +33,7 @@ public class ReservationService {
 
     private final VehicleRepository vehicleRepository;
     private final UserRepository userRepository;
+    private final JwtService jwtService;
 
 
     public ReservationService(CustomerReservationRepository customerReservationRepository,
@@ -40,13 +41,15 @@ public class ReservationService {
                               GuestReservationRepository guestReservationRepository,
                               GuestReservationMapper guestReservationMapper,
                               VehicleRepository vehicleRepository,
-                              UserRepository userRepository) {
+                              UserRepository userRepository,
+                              JwtService jwtService) {
         this.customerReservationRepository = customerReservationRepository;
         this.customerReservationMapper = customerReservationMapper;
         this.guestReservationRepository = guestReservationRepository;
         this.guestReservationMapper = guestReservationMapper;
         this.vehicleRepository = vehicleRepository;
         this.userRepository = userRepository;
+        this.jwtService = jwtService;
     }
 
     public ReservationResponse createReservation(CustomerReservationCreateRequest reservationCreateRequest) {
@@ -164,6 +167,21 @@ public class ReservationService {
                 .size(1)
                 .isSuccess(true)
                 .message(HttpStatus.OK.toString())
+                .build();
+    }
+
+    public ReservationResponse getReservationsOfUser(String token) {
+        String username = jwtService.extractUsername(token);
+        Optional<User> user = userRepository.findByUsername(username);
+        if (user.isEmpty()) {
+            throw new NotFoundException("User not found");
+        }
+        List<CustomerReservation> customerReservationList = user.get().getReservationList();
+        return ReservationResponse.builder()
+                .customerReservationDto(customerReservationMapper.customerReservationToDtoList(customerReservationList))
+                .size(customerReservationList.size())
+                .message(HttpStatus.OK.toString())
+                .isSuccess(true)
                 .build();
     }
 }

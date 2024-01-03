@@ -25,11 +25,6 @@ public class SecurityConfiguration {
 
     @Autowired
     private JwtAuthFilter jwtAuthFilter;
-    /*private final JwtAuthFilter jwtAuthFilter;
-
-    public SecurityConfiguration (JwtAuthFilter jwtAuthFilter) {
-        this.jwtAuthFilter = jwtAuthFilter;
-    }*/
 
     @Bean
     public UserDetailsService userDetailsService() {
@@ -50,7 +45,8 @@ public class SecurityConfiguration {
                         "/vehicle/create",
                         "/reservation/getAll**",
                         "/reservation/validateReservation**").hasAuthority("ADMIN")
-                .requestMatchers("/reservation/createReservation").hasAnyAuthority("USER")
+                .requestMatchers("/reservation/createReservation",
+                        "/reservation/getMyReservations").hasAnyAuthority("USER")
                 .anyRequest().authenticated()
                 .and()
                 //.authorizeHttpRequests().anyRequest().authenticated()

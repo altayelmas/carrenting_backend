@@ -63,8 +63,8 @@ public class VehicleServiceTest {
 
     @Test
     public void createVehicleTest_whenLicencePlateStartIsNotValid() {
-        VehicleCreateRequest vehicleCreateRequest = VehicleServiceTestSupport.generateVehicleRequest("ABC123");
-        assertThrows(NumberFormatException.class, () -> vehicleService.createVehicle(vehicleCreateRequest));
+        VehicleCreateRequest vehicleCreateRequest = VehicleServiceTestSupport.generateVehicleRequest("82ABC123");
+        assertThrows(InputMismatchException.class, () -> vehicleService.createVehicle(vehicleCreateRequest));
         verifyNoInteractions(vehicleRepository);
         verifyNoInteractions(vehicleMapper);
     }
