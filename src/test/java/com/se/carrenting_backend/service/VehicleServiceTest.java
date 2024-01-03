@@ -49,7 +49,7 @@ public class VehicleServiceTest {
     public void createVehicleTest_whenLicencePlateIsShorterThanSixCharacters() {
         VehicleCreateRequest vehicleCreateRequest = VehicleServiceTestSupport.generateVehicleRequest("34AB1");
         assertThrows(InputMismatchException.class, () -> vehicleService.createVehicle(vehicleCreateRequest));
-        verifyNoInteractions(vehicleRepository);
+        verify(vehicleRepository).existsById("34AB1");
         verifyNoInteractions(vehicleMapper);
     }
 
@@ -57,7 +57,7 @@ public class VehicleServiceTest {
     public void createVehicleTest_whenLicencePlateIsNotValid() {
         VehicleCreateRequest vehicleCreateRequest = VehicleServiceTestSupport.generateVehicleRequest("82ABC1");
         assertThrows(InputMismatchException.class, () -> vehicleService.createVehicle(vehicleCreateRequest));
-        verifyNoInteractions(vehicleRepository);
+        verify(vehicleRepository).existsById("82ABC1");
         verifyNoInteractions(vehicleMapper);
     }
 
@@ -65,7 +65,7 @@ public class VehicleServiceTest {
     public void createVehicleTest_whenLicencePlateStartIsNotValid() {
         VehicleCreateRequest vehicleCreateRequest = VehicleServiceTestSupport.generateVehicleRequest("82ABC123");
         assertThrows(InputMismatchException.class, () -> vehicleService.createVehicle(vehicleCreateRequest));
-        verifyNoInteractions(vehicleRepository);
+        verify(vehicleRepository).existsById("82ABC123");
         verifyNoInteractions(vehicleMapper);
     }
 
