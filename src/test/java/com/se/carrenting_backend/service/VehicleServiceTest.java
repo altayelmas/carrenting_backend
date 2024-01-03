@@ -41,7 +41,7 @@ public class VehicleServiceTest {
         when(vehicleRepository.save(any())).thenReturn(car);
         when(vehicleMapper.convertToDto(car)).thenReturn(vehicleDto);
 
-        VehicleDto result = vehicleService.createVehicle(vehicleCreateRequest);
+        VehicleDto result = vehicleService.createVehicle(vehicleCreateRequest).getVehicleDtoList().get(0);
         assertEquals(vehicleDto, result);
     }
 

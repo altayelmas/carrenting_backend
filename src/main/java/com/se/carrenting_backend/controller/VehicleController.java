@@ -23,7 +23,7 @@ public class VehicleController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<VehicleDto> createVehicle(@RequestBody VehicleCreateRequest request) {
+    public ResponseEntity<VehicleResponse> createVehicle(@RequestBody VehicleCreateRequest request) {
         try {
             return ResponseEntity.ok(vehicleService.createVehicle(request));
         } catch (InputMismatchException | NumberFormatException exception) {
