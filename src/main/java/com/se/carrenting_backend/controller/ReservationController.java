@@ -70,9 +70,11 @@ public class ReservationController {
     }
 
     @GetMapping("/getMyReservations")
-    public ResponseEntity<ReservationResponse> getReservationsOfUser(@RequestHeader String token) {
+    public ResponseEntity<ReservationResponse> getReservationsOfUser(@RequestHeader String token,
+                                                                     @RequestParam Integer page,
+                                                                     @RequestParam Integer size) {
         try {
-            ReservationResponse reservationResponse = reservationService.getReservationsOfUser(token);
+            ReservationResponse reservationResponse = reservationService.getReservationsOfUser(token, page, size);
             return new ResponseEntity<>(reservationResponse, HttpStatus.OK);
         } catch (NotFoundException notFoundException) {
             ReservationResponse reservationResponse = ReservationResponse.builder()

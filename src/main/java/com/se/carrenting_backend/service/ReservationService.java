@@ -170,13 +170,14 @@ public class ReservationService {
                 .build();
     }
 
-    public ReservationResponse getReservationsOfUser(String token) {
+    public ReservationResponse getReservationsOfUser(String token, Integer page, Integer size) {
         String username = jwtService.extractUsername(token);
         Optional<User> user = userRepository.findByUsername(username);
         if (user.isEmpty()) {
             throw new NotFoundException("User not found");
         }
-        List<CustomerReservation> customerReservationList = user.get().getReservationList();
+        Pageable pageable = PageRequest.of(page, size);
+        List<CustomerReservation> customerReservationList = customerReservationRepository.findAllByUser(user.get(), pageable).getContent();
         return ReservationResponse.builder()
                 .customerReservationDto(customerReservationMapper.customerReservationToDtoList(customerReservationList))
                 .size(customerReservationList.size())
