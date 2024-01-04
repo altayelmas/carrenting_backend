@@ -23,10 +23,16 @@ public class VehicleController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<VehicleDto> createVehicle(@RequestBody VehicleCreateRequest request) {
+    public ResponseEntity<VehicleResponse> createVehicle(@RequestBody VehicleCreateRequest request) {
         try {
             return ResponseEntity.ok(vehicleService.createVehicle(request));
-        } catch (InputMismatchException | NumberFormatException exception) {
+        } catch (InputMismatchException inputMismatchException) {
+            VehicleResponse.builder()
+                    .vehicleDtoList(new ArrayList<>())
+                    .vehicleAmount(0)
+                    .isSuccess(false)
+                    .message(inputMismatchException.getMessage())
+                    .build();
             return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
         }
     }

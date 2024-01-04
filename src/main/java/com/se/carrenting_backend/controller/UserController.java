@@ -1,5 +1,6 @@
 package com.se.carrenting_backend.controller;
 
+import com.se.carrenting_backend.exception.NotAvailableException;
 import com.se.carrenting_backend.model.dto.LoginRequest;
 import com.se.carrenting_backend.model.dto.LoginResponse;
 import com.se.carrenting_backend.model.dto.SignupRequest;
@@ -51,6 +52,14 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity<UserResponse> signUp(@RequestBody SignupRequest signupRequest) {
-        return ResponseEntity.ok(userService.signup(signupRequest));
+        try {
+            return ResponseEntity.ok(userService.signup(signupRequest));
+        } catch (NotAvailableException notAvailableException) {
+            UserResponse userResponse = new UserResponse();
+            userResponse.setUsername("");
+            userResponse.setSuccess(false);
+            userResponse.setMessage(notAvailableException.getMessage());
+            return new ResponseEntity<>(userResponse, HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 }

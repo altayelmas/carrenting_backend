@@ -1,5 +1,6 @@
 package com.se.carrenting_backend.service;
 
+import com.se.carrenting_backend.exception.NotAvailableException;
 import com.se.carrenting_backend.exception.NotFoundException;
 import com.se.carrenting_backend.mapper.VehicleMapper;
 import com.se.carrenting_backend.model.Car;
@@ -80,11 +81,19 @@ public class VehicleService {
     }
 
 
-    public VehicleDto createVehicle(VehicleCreateRequest request) {
-            String licencePlate = request.getLicencePlate();;
+    public VehicleResponse createVehicle(VehicleCreateRequest request) {
+            String licencePlate = request.getLicencePlate();
+            if (vehicleRepository.existsById(request.getLicencePlate())) {
+                throw new NotAvailableException("Vehicle with this licence plate already exists");
+            }
             if (licencePlate.length() <= 5) {
                 throw new InputMismatchException("Licence plate cannot be shorter than 6 characters");
             } else {
+                try {
+                    Integer.parseInt(licencePlate.substring(0, 2));
+                } catch (NumberFormatException numberFormatException) {
+                    throw new InputMismatchException("Licence plate should start with a number between 01 and 81");
+                }
                 if (!(Integer.parseInt(licencePlate.substring(0, 2)) >= 1 &&
                         Integer.parseInt(licencePlate.substring(0, 2)) <= 81)) {
                     throw new InputMismatchException("Licence plate should start with a number between 01 and 81");
@@ -103,7 +112,15 @@ public class VehicleService {
                             .customerReservationList(new ArrayList<>())
                             .guestReservationList(new ArrayList<>())
                             .build();
-                    return vehicleMapper.convertToDto(vehicleRepository.save(car));
+                    car = vehicleRepository.save(car);
+                    VehicleResponse vehicleResponse = VehicleResponse.builder()
+                            .vehicleDtoList(new ArrayList<>())
+                            .message(HttpStatus.OK.toString())
+                            .isSuccess(true)
+                            .vehicleAmount(1)
+                            .build();
+                    vehicleResponse.getVehicleDtoList().add(vehicleMapper.convertToDto(car));
+                    return vehicleResponse;
                 }
             }
     }

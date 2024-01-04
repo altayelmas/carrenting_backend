@@ -1,5 +1,6 @@
 package com.se.carrenting_backend.service;
 
+import com.se.carrenting_backend.exception.NotAvailableException;
 import com.se.carrenting_backend.model.Address;
 import com.se.carrenting_backend.model.User;
 import com.se.carrenting_backend.model.dto.SignupRequest;
@@ -7,6 +8,7 @@ import com.se.carrenting_backend.model.dto.UserInfoDetails;
 import com.se.carrenting_backend.model.dto.UserResponse;
 import com.se.carrenting_backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -31,6 +33,14 @@ public class UserService implements UserDetailsService {
     }
 
     public UserResponse signup(SignupRequest signupRequest) {
+        Optional<User> optionalUser = userRepository.findByUsername(signupRequest.getUsername());
+        if (!optionalUser.isEmpty()) {
+            throw new NotAvailableException("Username already exists");
+        }
+        optionalUser = userRepository.findByEmail(signupRequest.getEmail());
+        if (!optionalUser.isEmpty()) {
+            throw new NotAvailableException("Email already exists");
+        }
         User user = User.builder()
                 .email(signupRequest.getEmail())
                 .username(signupRequest.getUsername())
@@ -47,6 +57,8 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
         UserResponse userResponse = new UserResponse();
         userResponse.setUsername(user.getUsername());
+        userResponse.setSuccess(true);
+        userResponse.setMessage(HttpStatus.OK.toString());
         return userResponse;
     }
     public List<String> getRoles(String username) {

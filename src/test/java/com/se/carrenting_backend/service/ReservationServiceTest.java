@@ -31,6 +31,7 @@ public class ReservationServiceTest {
     private GuestReservationMapper guestReservationMapper;
     private VehicleRepository vehicleRepository;
     private UserRepository userRepository;
+    private JwtService jwtService;
 
     @BeforeEach
     public void setUp() {
@@ -40,13 +41,15 @@ public class ReservationServiceTest {
         guestReservationMapper = mock(GuestReservationMapper.class);
         vehicleRepository = mock(VehicleRepository.class);
         userRepository = mock(UserRepository.class);
+        jwtService = mock(JwtService.class);
 
         reservationService = new ReservationService(customerReservationRepository,
                 customerReservationMapper,
                 guestReservationRepository,
                 guestReservationMapper,
                 vehicleRepository,
-                userRepository);
+                userRepository,
+                jwtService);
     }
 
     @Test
