@@ -1,5 +1,6 @@
 package com.se.carrenting_backend.controller;
 
+import com.se.carrenting_backend.exception.NotAvailableException;
 import com.se.carrenting_backend.exception.NotFoundException;
 import com.se.carrenting_backend.model.dto.VehicleCreateRequest;
 import com.se.carrenting_backend.model.dto.VehicleDto;
@@ -26,14 +27,14 @@ public class VehicleController {
     public ResponseEntity<VehicleResponse> createVehicle(@RequestBody VehicleCreateRequest request) {
         try {
             return ResponseEntity.ok(vehicleService.createVehicle(request));
-        } catch (InputMismatchException inputMismatchException) {
-            VehicleResponse.builder()
+        } catch (InputMismatchException | NotAvailableException exception) {
+            VehicleResponse vehicleResponse = VehicleResponse.builder()
                     .vehicleDtoList(new ArrayList<>())
                     .vehicleAmount(0)
                     .isSuccess(false)
-                    .message(inputMismatchException.getMessage())
+                    .message(exception.getMessage())
                     .build();
-            return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>(vehicleResponse, HttpStatus.NOT_ACCEPTABLE);
         }
     }
 
